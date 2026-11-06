@@ -1,0 +1,10 @@
+name: Tests
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  # Runs on a self-hosted runner with Maya installed (see mayapy_test.sh).
+  maya-tests:
+    uses: sowwic/gh-workflows/.github/workflows/maya-tests.yml@v1
