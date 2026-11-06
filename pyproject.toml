@@ -75,4 +75,4 @@ invalid-return-type="ignore"
 invalid-method-override="ignore"
 
 [tool.uv.sources]
-nyx-bridge = { git = "https://github.com/sowwic/nyx-bridge", rev = "a880abb82f180ac3dce912f13e4388f454c42da5" }
+nyx-bridge = { git = "https://github.com/sowwic/nyx-bridge", rev = "c392ced57ba8fd09fa8ce8241a0360261e05d3cf" }

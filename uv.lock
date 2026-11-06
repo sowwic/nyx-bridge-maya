@@ -478,7 +478,7 @@ wheels = [
 [[package]]
 name = "nyx-bridge"
 version = "0.0.1"
-source = { git = "https://github.com/sowwic/nyx-bridge?rev=a880abb82f180ac3dce912f13e4388f454c42da5#a880abb82f180ac3dce912f13e4388f454c42da5" }
+source = { git = "https://github.com/sowwic/nyx-bridge?rev=c392ced57ba8fd09fa8ce8241a0360261e05d3cf#c392ced57ba8fd09fa8ce8241a0360261e05d3cf" }
 
 [[package]]
 name = "nyx-bridge-maya"
@@ -510,7 +510,7 @@ maya-pytest = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "nyx-bridge", git = "https://github.com/sowwic/nyx-bridge?rev=a880abb82f180ac3dce912f13e4388f454c42da5" }]
+requires-dist = [{ name = "nyx-bridge", git = "https://github.com/sowwic/nyx-bridge?rev=c392ced57ba8fd09fa8ce8241a0360261e05d3cf" }]
 
 [package.metadata.requires-dev]
 dev = [
