@@ -7,6 +7,7 @@ Maya's modules are imported when they are needed, so the package can be imported
 from __future__ import annotations
 
 import logging
+import os
 import threading
 import typing
 
@@ -75,6 +76,9 @@ class MayaClient(NyxClient):
         LOGGER.info("Disconnected from Nyx")
 
 
+CLIENT_NAME_VARIABLE = "NYX_BRIDGE_CLIENT_NAME"
+"""Environment variable naming the client, set by the Launch Process node of Nyx."""
+
 _client: MayaClient | None = None
 _thread: threading.Thread | None = None
 
@@ -133,3 +137,36 @@ def stop() -> None:
         client.stop()
     if thread is not None and thread is not threading.current_thread():
         thread.join(timeout=5)
+
+
+def serve_standalone(
+    name: str | None = None,
+    address: str | tuple[str, int] | None = None,
+    token: str | None = None,
+    connect_timeout: float | None = None,
+) -> None:
+    """Serve Nyx from the main thread of a Maya without a UI, until Nyx is done with it.
+
+    For `mayapy`, after `maya.standalone.initialize`: there is no event loop to hand
+    work to, so the requests run right on the calling thread. Returns when Nyx asks the
+    client to shut down or the connection ends, it does not reconnect. Start it from a
+    Launch Process node of Nyx with a command like
+
+        "$MAYAPY" -c "import maya.standalone; maya.standalone.initialize(name='python');
+        import nyx_bridge_maya; nyx_bridge_maya.serve_standalone();
+        maya.standalone.uninitialize()"
+
+    Args:
+        name (str | None): name Nyx shows for this Maya, `NYX_BRIDGE_CLIENT_NAME` if
+            omitted, then derived from the process id.
+        address (str | tuple[str, int] | None): `host:port` of Nyx, see `start`.
+        token (str | None): token of the Nyx server.
+        connect_timeout (float | None): seconds to keep trying to reach Nyx, forever if
+            omitted.
+    """
+    MayaClient(
+        name=name or os.environ.get(CLIENT_NAME_VARIABLE) or None,
+        address=address,
+        token=token,
+        reconnect=False,
+    ).serve_forever(connect_timeout)

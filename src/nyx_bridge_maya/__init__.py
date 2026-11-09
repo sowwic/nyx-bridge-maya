@@ -3,6 +3,7 @@ from nyx_bridge_maya.client import (
     get_client,
     is_connected,
     is_running,
+    serve_standalone,
     start,
     stop,
 )
@@ -14,6 +15,7 @@ __all__ = [
     "get_client",
     "is_connected",
     "is_running",
+    "serve_standalone",
     "start",
     "stop",
 ]

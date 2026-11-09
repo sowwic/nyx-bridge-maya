@@ -60,6 +60,29 @@ Set `python_version` to the Python version bundled with your Maya (`make venv` r
 `.venv` with it). CI runs on a self-hosted runner; trigger it with `make dispatch-pytest`.
 `make install` builds and installs the Maya module.
 
+## Starting Maya from a stage
+
+A stage can start a headless Maya itself, wait for it to connect and then run its Remote Actions in it, with a
+**Launch Process** node (Nyx) around a **Remote Client**:
+
+```
+Launch Process  ->  Remote Client  ->  Remote Action ...
+```
+
+Settings of the Launch Process node:
+
+| Input | Value |
+| --- | --- |
+| `command` | `"$MAYAPY" -c "import maya.standalone; maya.standalone.initialize(name='python'); import nyx_bridge_maya; nyx_bridge_maya.serve_standalone(); maya.standalone.uninitialize()"` |
+| `env` | `{"MAYAPY": "/Applications/Autodesk/maya2026/Maya.app/Contents/bin/mayapy", "MAYA_MODULE_PATH": "<folder with the nyx_bridge_maya.mod>"}` |
+| `timeout` | seconds to wait for Maya to boot (default 60) |
+
+Nyx gives the process the address and token of its bridge server and the name it is to connect as
+(`NYX_BRIDGE_ADDRESS`, `NYX_BRIDGE_TOKEN`, `NYX_BRIDGE_CLIENT_NAME`), `serve_standalone` uses them. The Remote
+Client inside the node uses that Maya and no other. When the nodes inside are done, Nyx asks Maya to shut down and
+stops the process if it does not. `MAYA_MODULE_PATH` is only needed when Maya does not find the module itself
+(`make install` puts it in the folder of your `.env`). The Nyx window waits while Maya boots.
+
 ## Releasing
 
 1. Add a `v<version>` entry to `CHANGELOG.rst`, update `VERSION` (`make update-version`) and commit on `main`.

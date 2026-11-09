@@ -1,4 +1,5 @@
 import threading
+import time
 
 import pytest
 from nyx_bridge.server import BridgeServer, RemoteExecutionError
@@ -99,3 +100,52 @@ def test_maya_errors_come_back_as_remote_errors(server):
 
     with pytest.raises(RemoteExecutionError, match="no_such_command"):
         run_remote(server, client, ("cmds.no_such_command()", "exec"))
+
+
+def test_serve_standalone_takes_its_name_from_the_environment_and_ends_on_shutdown(
+    server, monkeypatch
+):
+    import nyx_bridge_maya
+
+    monkeypatch.setenv(nyx_bridge_maya.client.CLIENT_NAME_VARIABLE, "from-environment")
+    outcome = {}
+
+    def drive():
+        try:
+            session = server.wait_for_client(name="from-environment", timeout=WAIT)
+            outcome["kind"] = session.kind
+            outcome["version"] = session.execute(
+                "cmds.about(version=True)", mode="eval", timeout=WAIT
+            ).value
+            session.request_shutdown()
+        except Exception as err:  # raised on the main thread below
+            outcome["error"] = err
+
+    driver = threading.Thread(target=drive)
+    driver.start()
+    nyx_bridge_maya.serve_standalone(
+        address=(server.host, server.port), token=server.token, connect_timeout=WAIT
+    )
+    driver.join(timeout=WAIT)
+
+    assert "error" not in outcome, outcome.get("error")
+    assert outcome["kind"] == "maya"
+    assert outcome["version"]
+    deadline = time.monotonic() + WAIT
+    while server.clients and time.monotonic() < deadline:
+        time.sleep(0.05)
+    assert not server.clients
+
+
+def test_serve_standalone_does_not_reconnect_when_nyx_goes_away(server):
+    import nyx_bridge_maya
+
+    def drop():
+        server.wait_for_client(kind="maya", timeout=WAIT).close()
+
+    dropper = threading.Thread(target=drop)
+    dropper.start()
+    nyx_bridge_maya.serve_standalone(
+        name="dropped", address=(server.host, server.port), token=server.token
+    )
+    dropper.join(timeout=WAIT)
