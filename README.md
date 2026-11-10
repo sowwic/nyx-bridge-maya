@@ -3,7 +3,40 @@
 ![Tests](https://github.com/sowwic/nyx-bridge-maya/actions/workflows/unit_tests.yml/badge.svg)
 ![Code Quality](https://github.com/sowwic/nyx-bridge-maya/actions/workflows/code_quality.yml/badge.svg)
 
-Description
+Connects Maya to a running [Nyx](https://github.com/sowwic/nyx), so stages can send
+commands to Maya and get results back. Maya connects out to Nyx's bridge server; Nyx
+never launches or reaches into Maya on its own.
+
+## Use
+
+`make install` builds the Maya module and installs its `.mod` file. Then in Maya:
+
+```python
+import maya.cmds as cmds
+
+cmds.loadPlugin("nyx_bridge_maya_plugin")
+cmds.nyxBridge(start=True)                      # connect, retrying until Nyx is up
+cmds.nyxBridge(query=True, connected=True)      # [True] once Nyx accepted Maya
+cmds.nyxBridge(stop=True)
+```
+
+Or without the plug-in, from Python:
+
+```python
+import nyx_bridge_maya
+
+nyx_bridge_maya.start()                         # background thread, returns the client
+nyx_bridge_maya.is_connected()
+nyx_bridge_maya.stop()
+```
+
+Nyx is found through the address file it writes, so on the same machine no setup is
+needed. Otherwise pass `address="host:port"` and `token=...` (flags `-address`,
+`-token`, `-name` on the command) or set `NYX_BRIDGE_ADDRESS` and `NYX_BRIDGE_TOKEN`.
+What Nyx sends runs on Maya's main thread; scripts find `cmds`, `mel` and `om`
+(`maya.api.OpenMaya`) in their namespace. In `mayapy` use
+`nyx_bridge_maya.MayaClient().serve_forever()` instead, there is no event loop for
+`start` to hand work to.
 
 ## Development
 
@@ -26,6 +59,29 @@ MAYA_MODULE_PATH=~/Library/Preferences/Autodesk/maya/modules
 Set `python_version` to the Python version bundled with your Maya (`make venv` recreates
 `.venv` with it). CI runs on a self-hosted runner; trigger it with `make dispatch-pytest`.
 `make install` builds and installs the Maya module.
+
+## Starting Maya from a stage
+
+A stage can start a headless Maya itself, wait for it to connect and then run its Remote Actions in it, with a
+**Launch Process** node (Nyx) around a **Remote Client**:
+
+```
+Launch Process  ->  Remote Client  ->  Remote Action ...
+```
+
+Settings of the Launch Process node:
+
+| Input | Value |
+| --- | --- |
+| `command` | `"$MAYAPY" -c "import maya.standalone; maya.standalone.initialize(name='python'); import nyx_bridge_maya; nyx_bridge_maya.serve_standalone(); maya.standalone.uninitialize()"` |
+| `env` | `{"MAYAPY": "/Applications/Autodesk/maya2026/Maya.app/Contents/bin/mayapy", "MAYA_MODULE_PATH": "<folder with the nyx_bridge_maya.mod>"}` |
+| `timeout` | seconds to wait for Maya to boot (default 60) |
+
+Nyx gives the process the address and token of its bridge server and the name it is to connect as
+(`NYX_BRIDGE_ADDRESS`, `NYX_BRIDGE_TOKEN`, `NYX_BRIDGE_CLIENT_NAME`), `serve_standalone` uses them. The Remote
+Client inside the node uses that Maya and no other. When the nodes inside are done, Nyx asks Maya to shut down and
+stops the process if it does not. `MAYA_MODULE_PATH` is only needed when Maya does not find the module itself
+(`make install` puts it in the folder of your `.env`). The Nyx window waits while Maya boots.
 
 ## Releasing
 

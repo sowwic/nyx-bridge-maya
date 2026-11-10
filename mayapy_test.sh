@@ -3,7 +3,10 @@ set -euo pipefail
 
 # Runs the test suite inside mayapy (maya.standalone).
 # The package is installed into a temporary Maya module, so tests exercise the
-# same layout Maya loads. Extra arguments are passed to pytest.
+# same layout Maya loads. The tests folder is always run, extra arguments (flags,
+# -k expressions) are passed to pytest. Do not pass the tests folder again: reached
+# through a symlink it is a second spelling of the same path and pytest refuses
+# its conftest twice.
 
 # -----------------------------
 # Configuration
