@@ -3,18 +3,14 @@ name = "nyx-bridge-maya"
 version = "1.0.0"
 description = "Description"
 authors = [
-    {name = "Dima Shevchenko",email = "47799401+sowwic@users.noreply.github.com"}
+  { name = "Dima Shevchenko", email = "47799401+sowwic@users.noreply.github.com" },
 ]
-license = {text = "MIT"}
+license = { text = "MIT" }
 readme = "README.md"
 # Maya 2026 (3.11.9)
 requires-python = ">=3.11,<3.14"
-packages = [
-    {include = "nyx_bridge_maya", from="src"},
-]
-dependencies = [
-    "nyx-bridge",
-]
+packages = [{ include = "nyx_bridge_maya", from = "src" }]
+dependencies = ["sowwic-nyx-bridge>=1.0.0"]
 
 [build-system]
 requires = ["uv_build>=0.10.6"]
@@ -25,25 +21,21 @@ module-name = "nyx_bridge_maya"
 
 [dependency-groups]
 dev = [
-    "pytest",
-    "pytest-cov",
-    "pytest-mock",
-    "maya-stubs",
-    "pyside6",
-    "mkdocs",
-    "mkdocs-material",
-    "mkdocstrings[python]",
-    "mkdocs-autorefs",
-    "mkdocs-autoapi",
-    "ruff",
-    "debugpy",
+  "pytest",
+  "pytest-cov",
+  "pytest-mock",
+  "maya-stubs",
+  "pyside6",
+  "mkdocs",
+  "mkdocs-material",
+  "mkdocstrings[python]",
+  "mkdocs-autorefs",
+  "mkdocs-autoapi",
+  "ruff",
+  "debugpy",
 ]
 # Installed into the temporary Maya module by mayapy_test.sh
-maya-pytest = [
-    "pytest",
-    "pytest-cov",
-    "pytest-mock",
-]
+maya-pytest = ["pytest", "pytest-cov", "pytest-mock"]
 
 [tool.ruff]
 src = ["src"]
@@ -51,16 +43,8 @@ exclude = ["**/resources_rc.py"]
 
 show-fixes = true
 line-length = 89
-lint.select = [
-    "E",
-    "F",
-    "UP",
-]
-lint.ignore = [
-    "D100",
-    "D104",
-    "D103",
-]
+lint.select = ["E", "F", "UP"]
+lint.ignore = ["D100", "D104", "D103"]
 
 [tool.pytest.ini_options]
 addopts = "--cov=nyx_bridge_maya --cov-report=term-missing"
@@ -68,11 +52,8 @@ log_cli = true
 log_cli_level = "ERROR"
 
 [tool.ty.rules]
-unresolved-attribute="ignore"
-invalid-argument-type="ignore"
-invalid-assignment="ignore"
-invalid-return-type="ignore"
-invalid-method-override="ignore"
-
-[tool.uv.sources]
-nyx-bridge = { git = "https://github.com/sowwic/nyx-bridge", tag = "v1.0.0" }
+unresolved-attribute = "ignore"
+invalid-argument-type = "ignore"
+invalid-assignment = "ignore"
+invalid-return-type = "ignore"
+invalid-method-override = "ignore"
