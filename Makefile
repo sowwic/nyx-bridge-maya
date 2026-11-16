@@ -6,7 +6,7 @@ PYTEST_PDB_CMD = ./mayapy_test.sh --pdb
 
 MAKEFILES_REF ?= v1
 MAKEFILES_URL ?= https://raw.githubusercontent.com/sowwic/makefiles/$(MAKEFILES_REF)
-MAKEFILES_MODULES = general/python dcc/maya
+MAKEFILES_MODULES = general/python general/repo dcc/maya
 
 .make/%.mk:
 	@mkdir -p $(dir $@)
