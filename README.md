@@ -9,7 +9,8 @@ never launches or reaches into Maya on its own.
 
 ## Use
 
-`make install` builds the Maya module and installs its `.mod` file. Then in Maya:
+`make install` builds the Maya module and installs its `.mod` file (`make install DIST_EXTRAS=usd` adds the operations of the
+[nyx-usd](https://github.com/sowwic/nyx-usd) nodes to it). Then in Maya:
 
 ```python
 import maya.cmds as cmds

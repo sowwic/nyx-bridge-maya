@@ -483,6 +483,11 @@ dependencies = [
     { name = "sowwic-nyx-bridge" },
 ]
 
+[package.optional-dependencies]
+usd = [
+    { name = "sowwic-nyx-usd" },
+]
+
 [package.dev-dependencies]
 dev = [
     { name = "debugpy" },
@@ -505,7 +510,11 @@ maya-pytest = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "sowwic-nyx-bridge", specifier = ">=1.0.0" }]
+requires-dist = [
+    { name = "sowwic-nyx-bridge", specifier = ">=1.0.0" },
+    { name = "sowwic-nyx-usd", marker = "extra == 'usd'", specifier = ">=1.0.0" },
+]
+provides-extras = ["usd"]
 
 [package.metadata.requires-dev]
 dev = [
@@ -835,6 +844,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/88/e4/52c9991ed82a3a6c5ec0126d01f8d7147f0f8b49022b04c9940d30d006be/sowwic_nyx_bridge-1.0.0.tar.gz", hash = "sha256:887a7774b938676b573a5831138c3f0a95ff96f5e96c5c260a2a906078068d72", size = 14817, upload-time = "2026-11-16T20:57:19.875Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/5e/7c/299f8a90cb96d84f3bb4a51e76144e8b4b107169734a335a964c524822ee/sowwic_nyx_bridge-1.0.0-py3-none-any.whl", hash = "sha256:4e76c983eb72843a5e1835db013e9375577f42523fdcab93df6931d47aa71396", size = 16473, upload-time = "2026-11-16T20:57:18.499Z" },
+]
+
+[[package]]
+name = "sowwic-nyx-usd"
+version = "1.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ab/d3/d3ed27287f62212146fc0086796932837c939bb511570c041341c4dc65cd/sowwic_nyx_usd-1.0.0.tar.gz", hash = "sha256:2ee830844b5cf6678d35cfa20b65e210563b45052ee78352aaf9b5a93c924d31", size = 12285, upload-time = "2026-11-18T00:30:37.55Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/36/bd/cefad6e248e7afa64d6a47614cb7ea499cfcbc0571ed2c1a2c5f79b65e4c/sowwic_nyx_usd-1.0.0-py3-none-any.whl", hash = "sha256:081e7194b37afe7cea6b5f72ea610eb5dc408e750bd87fbc525279426a1be962", size = 15432, upload-time = "2026-11-18T00:30:36.249Z" },
 ]
 
 [[package]]
