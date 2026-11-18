@@ -52,6 +52,29 @@ checkout in place, and run `make install` again after pulling changes.
 
 To remove it: `make uninstall`.
 
+### With the USD nodes of Nyx
+
+To run the operations of the USD nodes of Nyx ([nyx-usd](https://github.com/sowwic/nyx-usd))
+in Maya, put the `usd` extra in the module too:
+
+```sh
+make install DIST_EXTRAS=usd
+```
+
+This adds `sowwic-nyx-usd` (the `nyx_usd` package) to `python/`. To make it the default
+for your checkout, put `DIST_EXTRAS = usd` in the `Makefile` before the `include`. The
+extra of the package itself is `pip install "nyx-bridge-maya[usd]"`.
+
+In a headless Maya (`mayapy`), Maya 2026 does not find its USD by itself: set the
+environment variable `MULTI_USD_VERSION` to one of the USD builds installed with Maya, such
+as `0.25.5` (on macOS they are the `USD_<version>` folders in
+`/Applications/Autodesk/mayausd/maya2026/<release>/mayausd/`). Without it `import pxr` fails
+with `No module named 'pxr'`. With it, `pxr` imports without loading any plug-in. Don't
+leave a standalone USD on `PYTHONPATH` in that process, it would be found before the one
+of Maya. See [Starting Maya from a stage](standalone.md#using-usd-in-a-headless-maya).
+Connect Maya as below, then select it in Nyx with `client_kind = maya` on the Remote Client
+node.
+
 ## 3. Check it in Maya
 
 Restart Maya, then in the Script Editor:

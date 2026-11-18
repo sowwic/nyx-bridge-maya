@@ -1,6 +1,6 @@
 [project]
 name = "nyx-bridge-maya"
-version = "1.0.0"
+version = "1.0.1"
 description = "Description"
 authors = [
   { name = "Dima Shevchenko", email = "47799401+sowwic@users.noreply.github.com" },
@@ -11,6 +11,10 @@ readme = "README.md"
 requires-python = ">=3.11,<3.14"
 packages = [{ include = "nyx_bridge_maya", from = "src" }]
 dependencies = ["sowwic-nyx-bridge>=1.0.0"]
+
+[project.optional-dependencies]
+# The operations of the USD nodes of Nyx, to run them in Maya: make install DIST_EXTRAS=usd
+usd = ["sowwic-nyx-usd>=1.0.0"]
 
 [build-system]
 requires = ["uv_build>=0.10.6"]
