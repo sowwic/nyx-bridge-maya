@@ -1,6 +1,10 @@
 nyx-bridge-maya
 ===============
 
+v1.0.1
+------
+* (#7) Add nyx-usd as optional extra via `make install DIST_EXTRAS=usd`
+
 v1.0.0
 ------
 * Implement client serving in batch (#1)

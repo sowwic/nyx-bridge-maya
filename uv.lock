@@ -477,7 +477,7 @@ wheels = [
 
 [[package]]
 name = "nyx-bridge-maya"
-version = "1.0.0"
+version = "1.0.1"
 source = { editable = "." }
 dependencies = [
     { name = "sowwic-nyx-bridge" },
