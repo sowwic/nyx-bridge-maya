@@ -51,3 +51,9 @@ both together restart the client. Queries use `setResult`, which Maya returns as
 has `@VERSION@` and `@MODULE_ROOT@` filled in by sed. The targets come from
 [sowwic/makefiles](https://github.com/sowwic/makefiles) (`dcc/maya`), fetched into `.make/`
 and committed; `make update-make` fetches them again.
+
+`DIST_EXTRAS` (space or comma separated, empty by default) installs optional dependencies
+of the package into the module as well: `make dist DIST_EXTRAS=usd` runs
+`uv pip install --target ... ".[usd]"`. The extras are declared in
+`[project.optional-dependencies]` of `pyproject.toml`; today there is `usd`
+(`sowwic-nyx-usd`).

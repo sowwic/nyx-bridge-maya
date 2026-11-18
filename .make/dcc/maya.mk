@@ -13,6 +13,14 @@ MODULE_TEMPLATE ?= templates/$(PACKAGE_NAME).mod
 TESTS_WORKFLOW ?= unit_tests.yml
 GIT_BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD)
 
+# Extras of the package to put in the module too, space or comma separated. Set it in the
+# Makefile before the include (DIST_EXTRAS = usd), or for one run: make install DIST_EXTRAS=usd
+DIST_EXTRAS ?=
+_EMPTY :=
+_SPACE := $(_EMPTY) $(_EMPTY)
+_COMMA := ,
+DIST_PACKAGE ?= $(if $(strip $(DIST_EXTRAS)),".[$(subst $(_SPACE),$(_COMMA),$(strip $(subst $(_COMMA),$(_SPACE),$(DIST_EXTRAS))))]",.)
+
 .PHONY: venv
 venv: ## Recreate .venv using the Python version of mayapy (MAYAPY from the env file)
 	@set -a; . "$(ENV_FILE)"; set +a; \
@@ -28,11 +36,12 @@ dev: venv ## Create venv and enter it
 
 # The package is installed from the project folder, not from a built wheel: uv then follows
 # [tool.uv.sources], so dependencies that only exist as git sources can be installed.
+# DIST_EXTRAS adds optional dependencies of the package (`[project.optional-dependencies]`).
 .PHONY: dist
 dist: $(BUILD_PREREQS) ## Assemble dist/<package>_module (python + plug-ins)
 	@rm -rf $(DIST_MODULE_ROOT)
 	@mkdir -p $(DIST_MODULE_ROOT)/python $(DIST_MODULE_ROOT)/plug-ins
-	@uv pip install --target $(DIST_MODULE_ROOT)/python .
+	@uv pip install --target $(DIST_MODULE_ROOT)/python $(DIST_PACKAGE)
 	@cp -R $(SOURCE_PLUGINS_DIR)/. $(DIST_MODULE_ROOT)/plug-ins/
 
 .PHONY: maya-module-file

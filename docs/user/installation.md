@@ -52,6 +52,23 @@ checkout in place, and run `make install` again after pulling changes.
 
 To remove it: `make uninstall`.
 
+### With the USD nodes of Nyx
+
+To run the operations of the USD nodes of Nyx ([nyx-usd](https://github.com/sowwic/nyx-usd))
+in Maya, put the `usd` extra in the module too:
+
+```sh
+make install DIST_EXTRAS=usd
+```
+
+This adds `sowwic-nyx-usd` (the `nyx_usd` package) to `python/`. To make it the default
+for your checkout, put `DIST_EXTRAS = usd` in the `Makefile` before the `include`. The
+extra of the package itself is `pip install "nyx-bridge-maya[usd]"`.
+
+`pxr` is importable in Maya once the **mayaUsdPlugin** is loaded
+(`cmds.loadPlugin("mayaUsdPlugin")`). Connect Maya as below, then select it in Nyx with
+`client_kind = maya` on the Remote Client node.
+
 ## 3. Check it in Maya
 
 Restart Maya, then in the Script Editor:
